@@ -18,6 +18,11 @@ public class GameController : MonoBehaviour
         if (instance != null) Destroy(instance.gameObject);
         instance = this;
 
+        // NewBlock();
+    }
+
+    void Start()
+    {
         NewBlock();
     }
 
@@ -41,19 +46,25 @@ public class GameController : MonoBehaviour
             currentCube.transform.position = new Vector3(Mathf.Round(currentCube.transform.position.x),
                 currentCube.transform.position.y,
                 Mathf.Round(currentCube.transform.position.z));
-            currentCube.transform.position = new Vector3(lastCube.transform.localScale.x - Mathf.Abs(currentCube.transform.position.x - lastCube.transform.position.x),
+            Vector3 newLocalScale= new Vector3(lastCube.transform.localScale.x - Mathf.Abs(currentCube.transform.position.x - lastCube.transform.position.x),
                 lastCube.transform.localScale.y,
                 lastCube.transform.localScale.z - Mathf.Abs(currentCube.transform.position.z - lastCube.transform.position.z));
 
             currentCube.transform.position = Vector3.Lerp(currentCube.transform.position, lastCube.transform.position, 0.5f) + Vector3.up * 5f;
 
-            if (currentCube.transform.localScale.x <= 0f ||
-                currentCube.transform.localScale.z <= 0f)
+            if (newLocalScale.x <= 0f ||
+                newLocalScale.z <= 0f)
             {
+
+                currentCube.SetActive(false);
                 done = true;
                 text.gameObject.SetActive(true);
                 text.text = "Final Score: " + level;
                 StartCoroutine(RestartGameAfterDelay());
+            }
+            else
+            {
+                currentCube.transform.localScale = newLocalScale;
             }
         }
 
